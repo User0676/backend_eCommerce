@@ -4,6 +4,7 @@ from .serializers import OrderSerializer, OrderItemSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from products.tasks import send_order_confirmation_email
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -17,10 +18,14 @@ class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        return serializer.save(user=self.request.user)
+        order = serializer.save(user=self.request.user)
+        send_order_confirmation_email.delay(order.id)  # Вызов задачи Celery
+        return order
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
