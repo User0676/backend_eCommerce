@@ -18,11 +18,14 @@ class ProductModelTest(TestCase):
         self.assertEqual(self.product.name, "Smartphone")
         self.assertEqual(self.product.price, 699.99)
         self.assertEqual(self.product.stock_quantity, 50)
+        print("Order created with dalid data")
 
     def test_category_creation(self):
         self.assertEqual(self.category.name, "Electronics")
+        print("Order dont created with indalid data")
 
     def test_get_product_detail(self):
         response = self.client.get(f'/api/products/{self.product.id}/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Smartphone")
+        print("Order retrieved successfully")
