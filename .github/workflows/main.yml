@@ -35,6 +35,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -45,7 +53,10 @@ jobs:
         python -m venv .venv
         source .venv/bin/activate
         pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r django-shop-api/ecommerce_project/requirements.txt
+
+    - name: Change to Django project directory
+      run: cd django-shop-api/ecommerce_project
 
     - name: Run migrations
       env:
@@ -54,9 +65,17 @@ jobs:
         source .venv/bin/activate
         python manage.py migrate
 
+    - name: Collect static files
+      env:
+        DJANGO_SETTINGS_MODULE: ecommerce_project.settings
+      run: |
+        source .venv/bin/activate
+        python manage.py collectstatic --noinput
+
     - name: Run tests
       env:
         DJANGO_SETTINGS_MODULE: ecommerce_project.settings
       run: |
         source .venv/bin/activate
         python manage.py test
+
