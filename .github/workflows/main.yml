@@ -41,18 +41,19 @@ jobs:
         python-version: "3.9"
 
     - name: Install dependencies
+      working-directory: django-shop-api/ecommerce_project
       run: |
         python -m venv .venv  # Создание виртуального окружения
-        source .venv/bin/activate  # Активация виртуального окружения
+        . .venv/bin/activate  # Активация виртуального окружения
         pip install --upgrade pip
-        pip install -r django-shop-api/ecommerce_project/requirements.txt
+        pip install -r requirements.txt
 
     - name: Run migrations
       working-directory: django-shop-api/ecommerce_project/ecommerce_project
       env:
         DJANGO_SETTINGS_MODULE: ecommerce_project.settings
       run: |
-        source ../../.venv/bin/activate  # Активация окружения
+        . ../.venv/bin/activate  # Активация окружения
         python manage.py migrate  # Применение миграций
 
     - name: Run tests
@@ -60,6 +61,7 @@ jobs:
       env:
         DJANGO_SETTINGS_MODULE: ecommerce_project.settings
       run: |
-        source ../../.venv/bin/activate  # Активация окружения
+        . ../.venv/bin/activate  # Активация окружения
         python manage.py test  # Запуск тестов
+
 
