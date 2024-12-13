@@ -56,7 +56,7 @@ jobs:
         pip install -r django-shop-api/ecommerce_project/requirements.txt
 
     - name: Change to Django project directory
-      run: cd django-shop-api/ecommerce_project
+      working-directory: django-shop-api/ecommerce_project/ecommerce_project
 
     - name: Run migrations
       env:
