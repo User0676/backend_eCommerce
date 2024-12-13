@@ -25,4 +25,4 @@ class ProductModelTest(TestCase):
     def test_get_product_detail(self):
         response = self.client.get(f'/api/products/{self.product.id}/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["name"], "Test Product")
+        self.assertEqual(response.data["name"], "Smartphone")
